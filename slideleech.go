@@ -4,7 +4,14 @@ import (
 	"fmt"
 	"bufio"
 	"os"
+	"flag"
 )
+
+var outputDir string
+
+func init() {
+	flag.StringVar(&outputDir, "o", "./output", "output directory")
+}
 
 
 func check(e error) {
@@ -14,6 +21,10 @@ func check(e error) {
 }
 
 func main() {
+	flag.Parse();
+	
+	fmt.Println(outputDir)
+
 	file, err := os.Open("./mocks/test.md")
 
 	check(err)
@@ -49,9 +60,9 @@ func main() {
 
 		if matching {
 
-			result, err := slideFile.Write([]byte(scanner.Text()))
+			_, err := slideFile.Write([]byte(scanner.Text() + "\n"))
 			check(err)
-			fmt.Println(result)
+			// fmt.Println(result)
 			
 			// fmt.Println(value)
 		}
