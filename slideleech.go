@@ -8,9 +8,11 @@ import (
 )
 
 var outputDir string
+var inputFile string
 
 func init() {
 	flag.StringVar(&outputDir, "o", "./output", "output directory")
+	flag.StringVar(&inputFile, "i", "./README.md", "input filename")
 }
 
 
@@ -23,9 +25,10 @@ func check(e error) {
 func main() {
 	flag.Parse();
 	
-	fmt.Println(outputDir)
+	fmt.Println("Output Directory:", outputDir)
+	fmt.Println("Input Filename:", inputFile)
 
-	file, err := os.Open("./mocks/test.md")
+	file, err := os.Open(inputFile)
 
 	check(err)
 	
@@ -33,6 +36,8 @@ func main() {
 
 	var matching = false
 	var slideFile *os.File
+
+	fmt.Println("Creating slides...")
 	
 	for slideNum := 1; scanner.Scan();  {
 
@@ -41,7 +46,7 @@ func main() {
 		if value == "-startpreso-" {
 
 			matching = true
-			slideFileName := fmt.Sprintf("./mocks/slide%d.md", slideNum)
+			slideFileName := fmt.Sprintf(outputDir + "/slide%d.md", slideNum)
 			fmt.Println(slideFileName)
 
 			var err error
@@ -52,8 +57,6 @@ func main() {
 		} else if value == "-endpreso-" {
 			matching = false
 			
-			fmt.Println("save");
-			// Create new object?
 			slideFile.Close()
 			slideNum++
 		}
@@ -62,9 +65,7 @@ func main() {
 
 			_, err := slideFile.Write([]byte(scanner.Text() + "\n"))
 			check(err)
-			// fmt.Println(result)
-			
-			// fmt.Println(value)
+
 		}
 		
 	}
@@ -74,6 +75,5 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println("Save created objects here?")
 }
 
