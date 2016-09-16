@@ -38,12 +38,11 @@ func check(e error) {
 
 func main() {
 	flag.Parse();
-
-  args := flag.Args()
-  if len(args) < 2 {
-    flag.Usage()
-    os.Exit(-1)
-  }
+  // fmt.Println(inputFile)
+  // if len(inputFile) == 0 {
+  //   flag.Usage()
+  //   os.Exit(-1)
+  // }
 
 	fmt.Println("Output Directory:", outputDir)
 	fmt.Println("Input Filename:", inputFile)
