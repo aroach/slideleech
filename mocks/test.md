@@ -4,20 +4,20 @@
 
 what are you doing?!
 
--startpreso-
+[item]: # (slide)
 
 * abc
 * 123
 * efg
 
--endpreso-
+[item]: # (/slide)
 
 more text
 
--startpreso-
+[item]: # (slide)
 
 * xyz
 * 123
 * pdq
 
--endpreso-
+[item]: # (/slide)
