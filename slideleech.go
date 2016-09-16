@@ -5,6 +5,7 @@ import (
 	"bufio"
 	"os"
 	"flag"
+  "io"
 )
 
 var outputDir string
@@ -34,6 +35,40 @@ func check(e error) {
     if e != nil {
         panic(e)
     }
+}
+
+
+// CopyFile copies the contents from src to dst using io.Copy.
+// If dst does not exist, CopyFile creates it with permissions perm;
+// otherwise CopyFile truncates it before writing.
+func CopyFile(dst, src string, perm os.FileMode) (err error) {
+	in, err := os.Open(src)
+	if err != nil {
+		return
+	}
+	defer in.Close()
+	out, err := os.OpenFile(dst, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, perm)
+	if err != nil {
+		return
+	}
+	defer func() {
+		if e := out.Close(); e != nil {
+			err = e
+		}
+	}()
+	_, err = io.Copy(out, in)
+	return
+}
+
+func createSite() {
+
+    // Make a directory for the slideshow
+    if _, err := os.Stat(outputDir); os.IsNotExist(err) {
+        os.Mkdir(outputDir, 0755)
+    }
+
+    CopyFile(outputDir + "index.html", "./templates/index.html", 0755)
+
 }
 
 func main() {
