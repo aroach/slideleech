@@ -69,7 +69,7 @@ func CreateSite(slideCount int) {
 
     // Make a directory for the slideshow
     if _, err := os.Stat(outputDir); os.IsNotExist(err) {
-        os.Mkdir(outputDir, 0755)
+        os.Mkdir(outputDir, 0644)
     }
 
     var slides []SlideEntry
@@ -79,7 +79,7 @@ func CreateSite(slideCount int) {
       slides = append(slides, slideName)
     }
 
-    templ, err := template.ParseFiles("./templates/index.html")
+    templ, err := template.New("index").Parse(INDEX_TEMPLATE)
     check(err)
     // TODO: Save the template to the output directory
     indexFile, err := os.Create(outputDir + "/index.html")
