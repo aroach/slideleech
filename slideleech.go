@@ -5,14 +5,13 @@ import (
 	"bufio"
 	"os"
 	"flag"
-  "io"
   "html/template"
 )
 
 var outputDir string
 var inputFile string
 
-type Slide struct {
+type SlideEntry struct {
 	Content string
 }
 
@@ -42,43 +41,50 @@ func check(e error) {
     }
 }
 
+// 2016-09-17 Not used anymore
 
-// CopyFile copies the contents from src to dst using io.Copy.
-// If dst does not exist, CopyFile creates it with permissions perm;
-// otherwise CopyFile truncates it before writing.
-func CopyFile(dst, src string, perm os.FileMode) (err error) {
-	in, err := os.Open(src)
-	if err != nil {
-		return
-	}
-	defer in.Close()
-	out, err := os.OpenFile(dst, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, perm)
-	if err != nil {
-		return
-	}
-	defer func() {
-		if e := out.Close(); e != nil {
-			err = e
-		}
-	}()
-	_, err = io.Copy(out, in)
-	return
-}
+// // CopyFile copies the contents from src to dst using io.Copy.
+// // If dst does not exist, CopyFile creates it with permissions perm;
+// // otherwise CopyFile truncates it before writing.
+// func CopyFile(dst, src string, perm os.FileMode) (err error) {
+// 	in, err := os.Open(src)
+// 	if err != nil {
+// 		return
+// 	}
+// 	defer in.Close()
+// 	out, err := os.OpenFile(dst, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, perm)
+// 	if err != nil {
+// 		return
+// 	}
+// 	defer func() {
+// 		if e := out.Close(); e != nil {
+// 			err = e
+// 		}
+// 	}()
+// 	_, err = io.Copy(out, in)
+// 	return
+// }
 
-func CreateSite() {
+func CreateSite(slideCount int) {
 
     // Make a directory for the slideshow
     if _, err := os.Stat(outputDir); os.IsNotExist(err) {
         os.Mkdir(outputDir, 0755)
     }
 
-    // TODO: Loop based on the number of sections from the readme.
-    slides := []Slide{{"section-1.md"}, {"section-2.md"}}
+    var slides []SlideEntry
+    for i := 1; i <= slideCount; i++ {
+      var slideName SlideEntry
+      slideName.Content = fmt.Sprintf("slide%d.md", i)
+      slides = append(slides, slideName)
+    }
 
     templ, err := template.ParseFiles("./templates/index.html")
     check(err)
     // TODO: Save the template to the output directory
-    err = templ.Execute(os.Stdout, slides)
+    indexFile, err := os.Create(outputDir + "/index.html")
+    err = templ.Execute(indexFile, slides)
+    indexFile.Close()
     check(err)
 
 }
@@ -102,10 +108,11 @@ func main() {
 
 	var matching = false
 	var slideFile *os.File
+  var slideNum int
 
 	fmt.Println("Creating slides...")
 
-	for slideNum := 1; scanner.Scan();  {
+	for slideNum = 1; scanner.Scan();  {
 
 		value := scanner.Text()
 
@@ -125,6 +132,7 @@ func main() {
 
 			slideFile.Close()
 			slideNum++
+      fmt.Println("here %v", slideNum)
 		}
 
 		if matching {
@@ -134,9 +142,9 @@ func main() {
 
 		}
 
-    // Process template
-
 	}
+
+  CreateSite(slideNum - 1)
 
 	if err := scanner.Err(); err != nil {
 		fmt.Fprintln(os.Stderr, "error:", err)

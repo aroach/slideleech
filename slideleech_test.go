@@ -10,5 +10,5 @@ func TestCopy(t *testing.T) {
 }
 
 func TestCreateSite(t *testing.T) {
-  CreateSite()
+  CreateSite(3)
 }
