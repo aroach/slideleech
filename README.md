@@ -22,9 +22,23 @@ Within a reveal.js slideshow, customizations can be performed via the [index.htm
 </div>
 ```
 
+# Installation
+
+Currently, the project is hosted on Bitbucket.  As a result, the standard `go get` method won't work.
+
+```
+$ git clone ssh://git@bitbucket-eng-sjc1.cisco.com:7999/dll/slideleech.git
+$ cd slideleech
+$ go install
+```
+
 # Usage
 
 From within the directory that you are building your slides:
+
+If you're starting from an existing Markdown file, insert the relevant sections in your Markdown file that are bracketed by the slideleech tags.
+
+If you're starting a new project:
 
 ```
 $ mkdir awesome-project
