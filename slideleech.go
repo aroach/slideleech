@@ -10,6 +10,7 @@ import (
 
 var outputDir string
 var inputFile string
+var templateFile string
 
 type SlideEntry struct {
 	Content string
@@ -18,6 +19,7 @@ type SlideEntry struct {
 func init() {
 	flag.StringVar(&inputFile, "i", "./README.md", "input filename")
 	flag.StringVar(&outputDir, "o", "./output", "output directory")
+  flag.StringVar(&templateFile, "t", "", "full path to RevealJS template")
   flag.Usage = func() {
     fmt.Fprintf(os.Stderr, "\n*****************************************\n"+
       "This is the slideleech.  It will extract "+
@@ -79,9 +81,16 @@ func CreateSite(slideCount int) {
       slides = append(slides, slideName)
     }
 
-    templ, err := template.New("index").Parse(INDEX_TEMPLATE)
-    check(err)
-    // TODO: Save the template to the output directory
+    // Include custom template based on a flag
+    templ := template.New("index.html")
+    if templateFile != "" {
+      fmt.Println("Creating RevealJS index.html from EXTERNAL template...")
+      templ, _ = templ.ParseFiles(templateFile)
+    } else {
+      fmt.Println("Creating RevealJS index.html from INTERNAL template...")
+      templ, _ = templ.Parse(INDEX_TEMPLATE)
+    }
+    // Save the template to the output directory
     indexFile, err := os.Create(outputDir + "/index.html")
     err = templ.Execute(indexFile, slides)
     indexFile.Close()
@@ -99,6 +108,7 @@ func main() {
 
 	fmt.Println("Output Directory:", outputDir)
 	fmt.Println("Input Filename:", inputFile)
+  fmt.Println("Template File:", templateFile)
 
 	file, err := os.Open(inputFile)
 
@@ -132,7 +142,6 @@ func main() {
 
 			slideFile.Close()
 			slideNum++
-      fmt.Println("here %v", slideNum)
 		}
 
 		if matching {
