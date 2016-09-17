@@ -24,6 +24,9 @@
 	<body>
 		<div class="reveal">
 			<div class="slides">
+				{{range.}}
+				<section data-markdown="{{.Content}}"></section>
+				{{end}}
 			  <section data-markdown="section-1.md"></section>
 			  <section data-markdown="section-2.md"></section>
 			  <section data-markdown="section-3.md"></section>
@@ -35,13 +38,13 @@
 			  <section data-markdown="program_dockerfile.md"></section>
 			  <section data-markdown="run_program_dockerfile.md"></section>
 			  <section data-markdown="registry.md"></section>
-			  			  
+
 			</div>
 		</div>
 
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.3.0/lib/js/head.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.3.0/js/reveal.js"></script>
-		
+
 		<script>
 			// More info https://github.com/hakimel/reveal.js#configuration
 			Reveal.initialize({

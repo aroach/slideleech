@@ -6,10 +6,15 @@ import (
 	"os"
 	"flag"
   "io"
+  "html/template"
 )
 
 var outputDir string
 var inputFile string
+
+type Slide struct {
+	Content string
+}
 
 func init() {
 	flag.StringVar(&inputFile, "i", "./README.md", "input filename")
@@ -60,14 +65,21 @@ func CopyFile(dst, src string, perm os.FileMode) (err error) {
 	return
 }
 
-func createSite() {
+func CreateSite() {
 
     // Make a directory for the slideshow
     if _, err := os.Stat(outputDir); os.IsNotExist(err) {
         os.Mkdir(outputDir, 0755)
     }
 
-    CopyFile(outputDir + "index.html", "./templates/index.html", 0755)
+    // TODO: Loop based on the number of sections from the readme.
+    slides := []Slide{{"section-1.md"}, {"section-2.md"}}
+
+    templ, err := template.ParseFiles("./templates/index.html")
+    check(err)
+    // TODO: Save the template to the output directory
+    err = templ.Execute(os.Stdout, slides)
+    check(err)
 
 }
 
@@ -121,6 +133,8 @@ func main() {
 			check(err)
 
 		}
+
+    // Process template
 
 	}
 
