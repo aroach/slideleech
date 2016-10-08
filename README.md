@@ -66,7 +66,7 @@ Usage:
   -i string
     	input filename (default "./README.md")
   -o string
-    	output directory (default "./output")
+    	output directory (default "./slides")
   -t string
     	full path to RevealJS template
 ```
