@@ -47,10 +47,10 @@ func check(e error) {
 func CreateSite(slideCount int) {
 
     // Make a directory for the slideshow
-    if _, err := os.Stat(outputDir); os.IsNotExist(err) {
-        os.Mkdir(outputDir, 0755)
-    }
-
+    // if _, err := os.Stat(outputDir); os.IsNotExist(err) {
+    //     os.Mkdir(outputDir, 0755)
+    // }
+	
     var slides []SlideEntry
     for i := 1; i <= slideCount; i++ {
       var slideName SlideEntry
@@ -93,6 +93,12 @@ func main() {
 	var slideNum int
 
 	fmt.Println("Creating slides...")
+
+	
+	// Make a directory for the slideshow
+	if _, err := os.Stat(outputDir); os.IsNotExist(err) {
+		os.Mkdir(outputDir, 0755)
+	}
 
 	for slideNum = 1; scanner.Scan();  {
 
