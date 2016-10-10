@@ -9,6 +9,10 @@ import (
 //   CopyFile("./output/" + "index.html", "./templates/index.html", 0755)
 // }
 
+func TestCreateIntroSlide(t * testing.T) {
+  CreateIntroSlide()
+}
+
 func TestCreateSlides(t *testing.T) {
   var fileName = "mocks/test.md"
 
@@ -22,4 +26,8 @@ func TestCreateSlides(t *testing.T) {
 
 func TestCreateSite(t *testing.T) {
   CreateSite(3)
+}
+
+func TestCreateClosingSlide(t * testing.T) {
+  CreateClosingSlide(5)
 }

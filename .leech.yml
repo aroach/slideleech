@@ -1,6 +1,13 @@
 ---
-input_file: ./README.md
+input_file: ./mocks/test.md
 output_directory: ./slides
-reveal_template:
-reveal_intro:
-reveal_closing:
+reveal:
+  template:
+  template_color: FFFFFF
+  intro:
+  intro_title: Building Slideleech
+  intro_author: Ashley Roach / DevNet / @aroach
+  intro_color: 049FD9
+  closing:
+  closing_message: Thank you!
+  closing_color: 049FD9

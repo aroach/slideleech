@@ -28,7 +28,7 @@ const INDEX_TEMPLATE =`
 		<div class="reveal">
 			<div class="slides">
 				{{range. -}}
-				<section data-markdown="{{.Content}}"></section>
+				<section data-markdown="{{.Content}}" data-background-color="#{{.Color}}"></section>
 				{{end}}
 			</div>
 		</div>
@@ -55,5 +55,17 @@ const INDEX_TEMPLATE =`
 	</body>
 </html>
 
+
+`
+
+const INTRO_SLIDE =`
+## {{.Title}}
+
+{{.Author}}
+
+`
+
+const CLOSING_SLIDE =`
+## {{.Message}}
 
 `

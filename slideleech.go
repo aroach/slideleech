@@ -14,19 +14,34 @@ import (
 var outputDir string
 var inputFile string
 var templateFile string
+var revealTemplColor string
 var revealIntro string
+var revealIntroAuthor string
+var revealIntroTitle string
+var revealIntroColor string
 var revealClosing string
+var revealClosingMsg string
+var revealClosingColor string
 
 type SlideEntry struct {
 	Content string
+	Color string
 }
 
 type Config struct {
 	InputFile string `yaml:"input_file"`
 	OutputDir string `yaml:"output_directory"`
-	RevealTempl string `yaml:"reveal_template"`
-	RevealIntro string `yaml:"reveal_intro"`
-	RevealClosing string `yaml:"reveal_closing"`
+	Reveal struct {
+		Templ string `yaml:"template"`
+		TemplColor string `yaml:"template_color"`
+		Intro string `yaml:"intro"`
+		IntroTitle string `yaml:"intro_title"`
+		IntroAuthor string `yaml:"intro_author"`
+		IntroColor string `yaml:"intro_color"`
+		Closing string `yaml:"closing"`
+		ClosingMsg string `yaml:"closing_message"`
+		ClosingColor string `yaml:"closing_color"`
+	}
 }
 
 func (c *Config) Parse(data []byte) error {
@@ -42,9 +57,15 @@ func (c *Config) Parse(data []byte) error {
 
 	inputFile = c.InputFile
 	outputDir = c.OutputDir
-	templateFile = c.RevealTempl
-	revealIntro = c.RevealIntro
-	revealClosing = c.RevealClosing
+	templateFile = c.Reveal.Templ
+	revealTemplColor = c.Reveal.TemplColor
+	revealIntro = c.Reveal.Intro
+	revealIntroTitle = c.Reveal.IntroTitle
+	revealIntroAuthor = c.Reveal.IntroAuthor
+	revealIntroColor = c.Reveal.IntroColor
+	revealClosing = c.Reveal.Closing
+	revealClosingMsg = c.Reveal.ClosingMsg
+	revealClosingColor = c.Reveal.ClosingColor
 
 	return nil
 }
@@ -82,20 +103,58 @@ func check(e error) {
     }
 }
 
+func CreateIntroSlide() {
+	type IntroSlide struct {
+		Title string
+		Author string
+	}
+	slide := IntroSlide{revealIntroTitle, revealIntroAuthor}
+	templ, err := template.New("slide0.md").Parse(INTRO_SLIDE)
+	introFile, err := os.Create(outputDir + "/slide0.md")
+	fmt.Printf("Creating intro slide...\n")
+	err = templ.Execute(introFile, slide)
+	check(err)
+	introFile.Close()
+}
+
+func CreateClosingSlide(slideCount int) {
+	type ClosingSlide struct {
+		Message string
+	}
+	slideName := fmt.Sprintf("slide%d.md", slideCount)
+	slide := ClosingSlide{revealClosingMsg}
+	templ, err := template.New("slideEnd.md").Parse(CLOSING_SLIDE)
+	introFile, err := os.Create(outputDir + "/" + slideName)
+	fmt.Printf("Creating closing slide... %s\n", slideName)
+	err = templ.Execute(introFile, slide)
+	check(err)
+	introFile.Close()
+}
+
 
 func CreateSite(slideCount int) {
 
-    // Make a directory for the slideshow
-    // if _, err := os.Stat(outputDir); os.IsNotExist(err) {
-    //     os.Mkdir(outputDir, 0755)
-    // }
-
     var slides []SlideEntry
+
+		// add intro slide to slice
+		var intro SlideEntry
+		intro.Content = "slide0.md"
+		intro.Color = revealIntroColor
+		slides = append(slides, intro)
+
+		// Add content slides
     for i := 1; i <= slideCount; i++ {
       var slideName SlideEntry
       slideName.Content = fmt.Sprintf("slide%d.md", i)
+			slideName.Color = revealTemplColor
       slides = append(slides, slideName)
     }
+
+		// add closing slide to slice
+		var closing SlideEntry
+		closing.Content = fmt.Sprintf("slide%d.md", slideCount + 1)
+		closing.Color = revealClosingColor
+		slides = append(slides, closing)
 
     // Include custom template based on a flag
     templ := template.New("index.html")
@@ -127,11 +186,6 @@ func CreateSlides(inputFile string) int {
 	var slideNum int
 
 	fmt.Println("Creating slides...")
-
-	// Make a directory for the slideshow
-	if _, err := os.Stat(outputDir); os.IsNotExist(err) {
-		os.Mkdir(outputDir, 0755)
-	}
 
 	for slideNum = 1; scanner.Scan();  {
 
@@ -177,7 +231,14 @@ func main() {
 	fmt.Println("Input Filename:", inputFile)
 	fmt.Println("Template File:", templateFile)
 
+	// Make a directory for the slideshow
+	if _, err := os.Stat(outputDir); os.IsNotExist(err) {
+		os.Mkdir(outputDir, 0755)
+	}
+
+	CreateIntroSlide()
 	slideNum := CreateSlides(inputFile)
 	CreateSite(slideNum - 1)
+	CreateClosingSlide(slideNum)
 
 }

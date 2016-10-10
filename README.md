@@ -16,7 +16,7 @@ Within a reveal.js slideshow, customizations can be performed via the [index.htm
 <div class="reveal">
   <div class="slides">
     {{range. -}}
-    <section data-markdown="{{.Content}}"></section>
+    <section data-markdown="{{.Content}}"  data-background-color="#{{.Color}}"></section>
     {{end}}
   </div>
 </div>
@@ -32,6 +32,26 @@ $ cd slideleech
 $ go install
 ```
 
+# Configuration
+
+Create a `.leech.yml` file:
+
+```
+---
+input_file: ./README.md
+output_directory: ./slides
+reveal:
+  template:
+  template_color: FFFFFF
+  intro:
+  intro_title: Your Fancy Title
+  intro_author: John Doe / ACME, Inc. / @jdoe
+  intro_color: 049FD9
+  closing:
+  closing_message: Thank you!
+  closing_color: 049FD9
+```
+
 # Usage
 
 From within the directory that you are building your slides:
@@ -44,31 +64,15 @@ If you're starting a new project:
 $ mkdir awesome-project
 $ cd awesome-project
 ```
-Create a markdown file, and include the right content and slideleech tags.
+
+Create your Markdown file with the `[item]: # (slide)` and `[item]: # (/slide)`.  See [example](mocks/test.md) for a brief example.
+
+Start leeching! 
 
 ```
-$ slideleech -i="myMarkdownFile.md" -t="<path to my custom reveal index>/index.html"
+$ slideleech
 
 ```
-See below for defaults.
 
-```
-*****************************************
-This is the slideleech.  It will extract your slide text/bullets contained in a markdown file.
-
-Enclose your slide text/bullets in `[item]: # (slide)` and `[item]: # (/slide)`.
-Any content between those tags will be added to your slide file.
-Include as many opening and closing tag pairs as you like in your Markdown.
-
-Usage:
-  $ slideleech [options] [inputfile [outputfile]]
-
-  -i string
-    	input filename (default "./README.md")
-  -o string
-    	output directory (default "./slides")
-  -t string
-    	full path to RevealJS template
-```
 
 Author: asroach@cisco.com
