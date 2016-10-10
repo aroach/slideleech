@@ -8,6 +8,8 @@ added to a [reveal.js](https://github.com/hakimel/reveal.js) slideshow.
 * Creates a full RevealJS presentation in your output directory.  Read below for template customization.
 * Delimit slides in you Markdown document with the opening `[item]: # (slide)` and closing `[item]: # (/slide)` tags.
 
+Review the [CHANGELOG](CHANGELOG.md)
+
 # Template customization
 
 Within a reveal.js slideshow, customizations can be performed via the [index.html](https://github.com/hakimel/reveal.js/blob/master/index.html) file.  slideleech will automatically add your generated slides to the correct section using the following template markup.  If you want to provide your own `index.html`, just make sure you replace the pertinent part with the snippet below.
@@ -29,6 +31,7 @@ Currently, the project is hosted on Bitbucket.  As a result, the standard `go ge
 ```
 $ git clone ssh://git@bitbucket-eng-sjc1.cisco.com:7999/dll/slideleech.git
 $ cd slideleech
+$ go get gopkg.in/yaml.v2
 $ go install
 ```
 
@@ -67,7 +70,7 @@ $ cd awesome-project
 
 Create your Markdown file with the `[item]: # (slide)` and `[item]: # (/slide)`.  See [example](mocks/test.md) for a brief example.
 
-Start leeching! 
+Start leeching!
 
 ```
 $ slideleech
