@@ -1,25 +1,65 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"bufio"
 	"os"
 	"flag"
 	"html/template"
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
 )
 
 var outputDir string
 var inputFile string
 var templateFile string
+var revealIntro string
+var revealClosing string
 
 type SlideEntry struct {
 	Content string
 }
 
+type Config struct {
+	InputFile string `yaml:"input_file"`
+	OutputDir string `yaml:"output_directory"`
+	RevealTempl string `yaml:"reveal_template"`
+	RevealIntro string `yaml:"reveal_intro"`
+	RevealClosing string `yaml:"reveal_closing"`
+}
+
+func (c *Config) Parse(data []byte) error {
+	err := yaml.Unmarshal(data, c)
+	check(err)
+
+	if c.InputFile == "" {
+		return errors.New("Slideleech config: invalid `input_file`")
+	}
+	if c.OutputDir == "" {
+		return errors.New("Slideleech config: invalid `output_directory`")
+	}
+
+	inputFile = c.InputFile
+	outputDir = c.OutputDir
+	templateFile = c.RevealTempl
+	revealIntro = c.RevealIntro
+	revealClosing = c.RevealClosing
+
+	return nil
+}
+
 func init() {
-	flag.StringVar(&inputFile, "i", "./README.md", "input filename")
-	flag.StringVar(&outputDir, "o", "./slides", "output directory")
-	flag.StringVar(&templateFile, "t", "", "full path to RevealJS template")
+	var config Config
+
+	yml, err := ioutil.ReadFile(".leech.yml")
+	check(err)
+	err2 := config.Parse(yml)
+	check(err2)
+
+	// flag.StringVar(&inputFile, "i", "./README.md", "input filename")
+	// flag.StringVar(&outputDir, "o", "./slides", "output directory")
+	// flag.StringVar(&templateFile, "t", "", "full path to RevealJS template")
 	flag.Usage = func() {
 	fmt.Fprintf(os.Stderr, "\n*****************************************\n"+
 		"This is the slideleech.  It will extract "+
@@ -29,8 +69,7 @@ func init() {
 		"Any content between those tags will be added to your slide file.\n"+
 		"Include as many opening and closing tag pairs as you like "+
 		"in your Markdown.\n\n"+
-		"Usage:\n"+
-		"  %s [options] [inputfile [outputfile]]\n\n",
+		"Edit a `.leech.yml` to configure your project\n\n",
 		os.Args[0])
 	flag.PrintDefaults()
   }

@@ -1,0 +1,6 @@
+---
+input_file: ./README.md
+output_directory: ./slides
+reveal_template:
+reveal_intro:
+reveal_closing:
