@@ -50,7 +50,7 @@ func CreateSite(slideCount int) {
     // if _, err := os.Stat(outputDir); os.IsNotExist(err) {
     //     os.Mkdir(outputDir, 0755)
     // }
-	
+
     var slides []SlideEntry
     for i := 1; i <= slideCount; i++ {
       var slideName SlideEntry
@@ -75,12 +75,7 @@ func CreateSite(slideCount int) {
 
 }
 
-func main() {
-	flag.Parse();
-
-	fmt.Println("Output Directory:", outputDir)
-	fmt.Println("Input Filename:", inputFile)
-	fmt.Println("Template File:", templateFile)
+func CreateSlides(inputFile string) int {
 
 	file, err := os.Open(inputFile)
 
@@ -94,7 +89,6 @@ func main() {
 
 	fmt.Println("Creating slides...")
 
-	
 	// Make a directory for the slideshow
 	if _, err := os.Stat(outputDir); os.IsNotExist(err) {
 		os.Mkdir(outputDir, 0755)
@@ -128,14 +122,23 @@ func main() {
 			check(err)
 
 		}
-
 	}
-
-	CreateSite(slideNum - 1)
 
 	if err := scanner.Err(); err != nil {
 		fmt.Fprintln(os.Stderr, "error:", err)
 		os.Exit(1)
 	}
+	return slideNum
+}
+
+func main() {
+	flag.Parse();
+
+	fmt.Println("Output Directory:", outputDir)
+	fmt.Println("Input Filename:", inputFile)
+	fmt.Println("Template File:", templateFile)
+
+	slideNum := CreateSlides(inputFile)
+	CreateSite(slideNum - 1)
 
 }
