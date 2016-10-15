@@ -1,6 +1,7 @@
 ---
 input_file: ./mocks/test.md
 output_directory: ./slides
+output_filename: phase
 reveal:
   template:
   template_color: FFFFFF

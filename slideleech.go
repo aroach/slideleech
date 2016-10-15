@@ -13,6 +13,7 @@ import (
 
 var outputDir string
 var inputFile string
+var outputFile string
 var templateFile string
 var revealTemplColor string
 var revealIntro string
@@ -31,6 +32,7 @@ type SlideEntry struct {
 type Config struct {
 	InputFile string `yaml:"input_file"`
 	OutputDir string `yaml:"output_directory"`
+	OutputFile string `yaml:"output_filename"`
 	Reveal struct {
 		Templ string `yaml:"template"`
 		TemplColor string `yaml:"template_color"`
@@ -54,9 +56,13 @@ func (c *Config) Parse(data []byte) error {
 	if c.OutputDir == "" {
 		return errors.New("Slideleech config: invalid `output_directory`")
 	}
+	if c.OutputFile == "" {
+		return errors.New("Slideleech config: invalid `output_file`")
+	}
 
 	inputFile = c.InputFile
 	outputDir = c.OutputDir
+	outputFile = c.OutputFile
 	templateFile = c.Reveal.Templ
 	revealTemplColor = c.Reveal.TemplColor
 	revealIntro = c.Reveal.Intro
@@ -77,6 +83,7 @@ func init() {
 	check(err)
 	err2 := config.Parse(yml)
 	check(err2)
+	fmt.Println("Config:", config)
 
 	// flag.StringVar(&inputFile, "i", "./README.md", "input filename")
 	// flag.StringVar(&outputDir, "o", "./slides", "output directory")
@@ -103,25 +110,25 @@ func check(e error) {
     }
 }
 
-func CreateIntroSlide() {
+func CreateIntroSlide(outputFileName string) {
 	type IntroSlide struct {
 		Title string
 		Author string
 	}
 	slide := IntroSlide{revealIntroTitle, revealIntroAuthor}
 	templ, err := template.New("slide0.md").Parse(INTRO_SLIDE)
-	introFile, err := os.Create(outputDir + "/slide0.md")
+	introFile, err := os.Create(outputDir + "/" + outputFileName + "0.md")
 	fmt.Printf("Creating intro slide...\n")
 	err = templ.Execute(introFile, slide)
 	check(err)
 	introFile.Close()
 }
 
-func CreateClosingSlide(slideCount int) {
+func CreateClosingSlide(slideCount int, outputFileName string) {
 	type ClosingSlide struct {
 		Message string
 	}
-	slideName := fmt.Sprintf("slide%d.md", slideCount)
+	slideName := fmt.Sprintf(outputFileName +"%d.md", slideCount)
 	slide := ClosingSlide{revealClosingMsg}
 	templ, err := template.New("slideEnd.md").Parse(CLOSING_SLIDE)
 	introFile, err := os.Create(outputDir + "/" + slideName)
@@ -132,27 +139,27 @@ func CreateClosingSlide(slideCount int) {
 }
 
 
-func CreateSite(slideCount int) {
+func CreateSite(slideCount int, outputFileName string) {
 
     var slides []SlideEntry
 
 		// add intro slide to slice
 		var intro SlideEntry
-		intro.Content = "slide0.md"
+		intro.Content = outputFileName + "0.md"
 		intro.Color = revealIntroColor
 		slides = append(slides, intro)
 
 		// Add content slides
     for i := 1; i <= slideCount; i++ {
       var slideName SlideEntry
-      slideName.Content = fmt.Sprintf("slide%d.md", i)
+      slideName.Content = fmt.Sprintf(outputFileName + "%d.md", i)
 			slideName.Color = revealTemplColor
       slides = append(slides, slideName)
     }
 
 		// add closing slide to slice
 		var closing SlideEntry
-		closing.Content = fmt.Sprintf("slide%d.md", slideCount + 1)
+		closing.Content = fmt.Sprintf(outputFileName + "%d.md", slideCount + 1)
 		closing.Color = revealClosingColor
 		slides = append(slides, closing)
 
@@ -166,14 +173,14 @@ func CreateSite(slideCount int) {
       templ, _ = templ.Parse(INDEX_TEMPLATE)
     }
     // Save the template to the output directory
-    indexFile, err := os.Create(outputDir + "/index.html")
+    indexFile, err := os.Create(outputDir + "/" + outputFileName + ".html")
     err = templ.Execute(indexFile, slides)
     indexFile.Close()
     check(err)
 
 }
 
-func CreateSlides(inputFile string) int {
+func CreateSlides(inputFile string, outputFileName string) int {
 
 	file, err := os.Open(inputFile)
 
@@ -194,7 +201,7 @@ func CreateSlides(inputFile string) int {
 		if value == "[item]: # (slide)" {
 
 			matching = true
-			slideFileName := fmt.Sprintf(outputDir + "/slide%d.md", slideNum)
+			slideFileName := fmt.Sprintf(outputDir + "/" + outputFileName + "%d.md", slideNum)
 			fmt.Println(slideFileName)
 
 			var err error
@@ -236,9 +243,9 @@ func main() {
 		os.Mkdir(outputDir, 0755)
 	}
 
-	CreateIntroSlide()
-	slideNum := CreateSlides(inputFile)
-	CreateSite(slideNum - 1)
-	CreateClosingSlide(slideNum)
+	CreateIntroSlide(outputFile)
+	slideNum := CreateSlides(inputFile, outputFile)
+	CreateSite(slideNum - 1, outputFile)
+	CreateClosingSlide(slideNum, outputFile)
 
 }

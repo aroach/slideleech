@@ -43,6 +43,7 @@ Create a `.leech.yml` file:
 ---
 input_file: ./README.md
 output_directory: ./slides
+output_filename: slide
 reveal:
   template:
   template_color: FFFFFF
@@ -54,6 +55,22 @@ reveal:
   closing_message: Thank you!
   closing_color: 049FD9
 ```
+
+| Key           | Value       | Required  |
+| ------------- | ----------- | --------- |
+| input_file    | The markdown file that you would like to generate slides from. | Yes |
+| output_directory      | The directory name where to place the slides.      |   Yes |
+| output_filename | The string to use as the filename. (E.g., by entering `slide` as a value would produce slide.html, slide0.html, etc.)     |    Yes |
+| reveal > template | An existing reveal template to use for slide generation.      |    No |
+| reveal > template_color | Background color for main slides.     |    Yes |
+| reveal > intro | Not used      |    No |
+| reveal > intro_title | The presentation title |    Yes |
+| reveal > intro_author | The presentation author |    Yes |
+| reveal > intro_color | Background color for intro slide |    Yes |
+| reveal > closing | Not used      |    No |
+| reveal > closing_message | Closing slide message     |    Yes |
+| reveal > closing_color | Closing slide background color      |    Yes |
+
 
 # Usage
 

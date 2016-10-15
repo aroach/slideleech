@@ -1,5 +1,20 @@
 All notable changes to this project will be documented in this file.
 
+## 2016-10-15
+
+### Added
+- Make the filename configurable for slide set
+- Output config file properties that have been parsed
+
+### Deprecated
+- Nothing.
+
+### Removed
+- Nothing
+
+### Fixed
+- Nothing
+
 ## 2016-10-10
 
 ### Added

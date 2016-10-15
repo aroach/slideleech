@@ -10,13 +10,13 @@ import (
 // }
 
 func TestCreateIntroSlide(t * testing.T) {
-  CreateIntroSlide()
+  CreateIntroSlide("test")
 }
 
 func TestCreateSlides(t *testing.T) {
   var fileName = "mocks/test.md"
 
-  slideCount := CreateSlides(fileName)
+  slideCount := CreateSlides(fileName, "test")
 
   if slideCount != 3 {
     t.Error("Expected 3 but got ", slideCount)
@@ -25,9 +25,9 @@ func TestCreateSlides(t *testing.T) {
 }
 
 func TestCreateSite(t *testing.T) {
-  CreateSite(3)
+  CreateSite(3, "test")
 }
 
 func TestCreateClosingSlide(t * testing.T) {
-  CreateClosingSlide(5)
+  CreateClosingSlide(5, "test")
 }
