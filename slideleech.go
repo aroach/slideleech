@@ -249,6 +249,7 @@ func CreateSlides(inputFile string, outputFileName string) int {
 }
 
 func main() {
+	var serve = flag.Bool("serve", false, "set true to serve slides")
 	flag.Parse()
 
 	fmt.Println("Output Directory:", outputDir)
@@ -264,5 +265,10 @@ func main() {
 	slideNum := CreateSlides(inputFile, outputFile)
 	CreateSite(slideNum-1, outputFile)
 	CreateClosingSlide(slideNum, outputFile)
+
+	fmt.Println("Should I serve your slides?", *serve)
+	if *serve {
+		serveSlides(outputDir)
+	}
 
 }

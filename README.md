@@ -94,5 +94,13 @@ $ slideleech
 
 ```
 
+To serve the slides on your local machine use the `-serve` flag.  This will build your project and serve up on port 3000.
+
+```
+$ slideleech -serve
+2017/06/01 17:19:36 Listening...
+2017/06/01 17:19:36 Open your browser to http://localhost:3000
+```
+
 
 Author: asroach@cisco.com
