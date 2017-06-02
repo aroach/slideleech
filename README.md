@@ -37,7 +37,13 @@ $ go install
 
 # Configuration
 
-Create a `.leech.yml` file:
+Create a `.leech.yml` file in your root directory via:
+
+```
+$ slideleech -init
+```
+
+The resulting file will resemble:
 
 ```
 ---
@@ -91,6 +97,12 @@ Start leeching!
 
 ```
 $ slideleech
+Creating intro slide... test0.md
+Creating slides...
+./slides/test1.md
+./slides/test2.md
+Creating RevealJS index.html from INTERNAL template...
+Creating closing slide... test5.md
 
 ```
 

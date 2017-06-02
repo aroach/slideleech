@@ -1,6 +1,6 @@
 package main
 
-const INDEX_TEMPLATE =`
+const INDEX_TEMPLATE = `
 <!doctype html>
 <html>
 	<head>
@@ -58,14 +58,31 @@ const INDEX_TEMPLATE =`
 
 `
 
-const INTRO_SLIDE =`
+const INTRO_SLIDE = `
 ## {{.Title}}
 
 {{.Author}}
 
 `
 
-const CLOSING_SLIDE =`
+const CLOSING_SLIDE = `
 ## {{.Message}}
 
+`
+
+const LEECH_FILE = `
+---
+input_file: ./README.md
+output_directory: ./slides
+output_filename: slide
+reveal:
+  template:
+  template_color: FFFFFF
+  intro:
+  intro_title: Insert Your Title Here!
+  intro_author: Author / Title / twitter
+  intro_color: 049FD9
+  closing:
+  closing_message: Thank you!
+  closing_color: 049FD9
 `

@@ -114,6 +114,18 @@ type specialSlide struct {
 	fields   map[string]string
 }
 
+// CreateLeechFile -- Creates a .leech.yml file in the current directory
+func CreateLeechFile(leechFileName string) {
+	fmt.Printf("Creating project configuration file %s", leechFileName)
+	templ := template.New("leechFile")
+	templ, _ = templ.Parse(LEECH_FILE)
+	leechFile, err := os.Create(leechFileName)
+	err = templ.Execute(leechFile, "")
+	leechFile.Close()
+	check(err)
+}
+
+// CreateSpecialSlide -- Creates a beginning or ending slide
 func CreateSpecialSlide(outputFileName string, slide specialSlide) {
 
 	slideFile, err := os.Create(outputDir + "/" + outputFileName)
@@ -250,6 +262,7 @@ func CreateSlides(inputFile string, outputFileName string) int {
 
 func main() {
 	var serve = flag.Bool("serve", false, "set true to serve slides")
+	var initialize = flag.Bool("init", false, "Create .leech.yml file")
 	flag.Parse()
 
 	fmt.Println("Output Directory:", outputDir)
@@ -269,6 +282,10 @@ func main() {
 	fmt.Println("Should I serve your slides?", *serve)
 	if *serve {
 		serveSlides(outputDir)
+	}
+
+	if *initialize {
+		CreateLeechFile(".leech.yml")
 	}
 
 }
